@@ -7,18 +7,26 @@ const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, 600);
 document.getElementById('canvas-container').appendChild(renderer.domElement);
 
-// Exemplu cub 3D (poți înlocui cu model .glb)
-const geometry = new THREE.BoxGeometry();
-const material = new THREE.MeshNormalMaterial();
-const cube = new THREE.Mesh(geometry, material);
-scene.add(cube);
+// Lumină
+const light = new THREE.DirectionalLight(0xffffff, 1);
+light.position.set(5,5,5).normalize();
+scene.add(light);
+
+// Încarcă modelul GLB
+const loader = new GLTFLoader();
+loader.load('small_house.glb', function(gltf){
+    const model = gltf.scene;
+    model.scale.set(1,1,1); // ajustează dimensiunea dacă e nevoie
+    model.position.set(0,0,0);
+    scene.add(model);
+}, undefined, function(error){
+    console.error(error);
+});
 
 camera.position.z = 5;
 
 function animate() {
     requestAnimationFrame(animate);
-    cube.rotation.y += 0.01;
-    cube.rotation.x += 0.01;
     renderer.render(scene, camera);
 }
 animate();

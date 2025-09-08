@@ -2,7 +2,7 @@
 <html lang="ro">
 <head>
   <meta charset="UTF-8">
-  <title>Mini Cartier 3D</title>
+  <title>Mini Cartier 3D cu Parcare și Mașini</title>
   <style>
     body { margin:0; background:#aaf; overflow:hidden; }
     canvas { display:block; }
@@ -11,6 +11,7 @@
 <body>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/examples/js/controls/OrbitControls.js"></script>
 
 <script>
   // 1️⃣ Scena și camera
@@ -18,100 +19,141 @@
   scene.background = new THREE.Color(0xaaf);
 
   const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 100);
-  camera.position.set(10,8,15);
-  camera.lookAt(0,0,0);
+  camera.position.set(20,15,25);
 
   // 2️⃣ Renderer
   const renderer = new THREE.WebGLRenderer({antialias:true});
   renderer.setSize(window.innerWidth, window.innerHeight);
   document.body.appendChild(renderer.domElement);
 
-  // 3️⃣ Lumini
+  // 3️⃣ OrbitControls
+  const controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.target.set(0,0.75,0);
+  controls.update();
+
+  // 4️⃣ Lumini
   const ambientLight = new THREE.AmbientLight(0xffffff,0.6);
   scene.add(ambientLight);
 
   const directionalLight = new THREE.DirectionalLight(0xffffff,0.8);
-  directionalLight.position.set(10,10,10);
+  directionalLight.position.set(20,20,10);
   scene.add(directionalLight);
 
-  // 4️⃣ Teren
-  const groundGeo = new THREE.PlaneGeometry(30,30);
+  // 5️⃣ Teren
+  const groundGeo = new THREE.PlaneGeometry(50,50);
   const groundMat = new THREE.MeshStandardMaterial({color:0x77aa77});
   const ground = new THREE.Mesh(groundGeo, groundMat);
   ground.rotation.x = -Math.PI/2;
   scene.add(ground);
 
-  // 5️⃣ Funcție pentru casă stilizată
+  // 6️⃣ Funcție casă stilizată
   function createHouse(x,z,color){
     const house = new THREE.Group();
-
-    // corp
-    const bodyGeo = new THREE.BoxGeometry(2,1.5,2);
+    const bodyGeo = new THREE.BoxGeometry(3,2,3);
     const bodyMat = new THREE.MeshStandardMaterial({color: color});
     const body = new THREE.Mesh(bodyGeo, bodyMat);
-    body.position.y = 0.75;
+    body.position.y = 1;
     house.add(body);
 
-    // acoperiș
-    const roofGeo = new THREE.ConeGeometry(1.5,1,4);
+    const roofGeo = new THREE.ConeGeometry(2,1.5,4);
     const roofMat = new THREE.MeshStandardMaterial({color:0xaa0000});
     const roof = new THREE.Mesh(roofGeo, roofMat);
-    roof.position.y = 2;
+    roof.position.y = 3;
     roof.rotation.y = Math.PI/4;
     house.add(roof);
 
     house.position.set(x,0,z);
     scene.add(house);
-
     return house;
   }
 
-  // 6️⃣ Funcție pentru copac
+  // 7️⃣ Funcție copac
   function createTree(x,z){
     const tree = new THREE.Group();
-
-    const trunkGeo = new THREE.CylinderGeometry(0.2,0.2,1,8);
+    const trunkGeo = new THREE.CylinderGeometry(0.3,0.3,1.5,8);
     const trunkMat = new THREE.MeshStandardMaterial({color:0x663300});
     const trunk = new THREE.Mesh(trunkGeo,trunkMat);
-    trunk.position.y = 0.5;
+    trunk.position.y = 0.75;
     tree.add(trunk);
 
-    const leavesGeo = new THREE.ConeGeometry(0.7,1,8);
+    const leavesGeo = new THREE.ConeGeometry(1,2,8);
     const leavesMat = new THREE.MeshStandardMaterial({color:0x00aa00});
     const leaves = new THREE.Mesh(leavesGeo,leavesMat);
-    leaves.position.y = 1.5;
+    leaves.position.y = 2.25;
     tree.add(leaves);
 
     tree.position.set(x,0,z);
     scene.add(tree);
-
     return tree;
   }
 
-  // 7️⃣ Adăugăm case
+  // 8️⃣ Funcție alee
+  function createPath(x,z,w,h){
+    const pathGeo = new THREE.PlaneGeometry(w,h);
+    const pathMat = new THREE.MeshStandardMaterial({color:0x885533});
+    const path = new THREE.Mesh(pathGeo,pathMat);
+    path.rotation.x = -Math.PI/2;
+    path.position.set(x,0.01,z);
+    scene.add(path);
+    return path;
+  }
+
+  // 9️⃣ Funcție parcare
+  function createParking(x,z,w,h){
+    const parkingGeo = new THREE.PlaneGeometry(w,h);
+    const parkingMat = new THREE.MeshStandardMaterial({color:0x555555});
+    const parking = new THREE.Mesh(parkingGeo,parkingMat);
+    parking.rotation.x = -Math.PI/2;
+    parking.position.set(x,0.01,z);
+    scene.add(parking);
+    return parking;
+  }
+
+  // 🔟 Funcție mașină (cub colorat)
+  function createCar(x,z,color){
+    const carGeo = new THREE.BoxGeometry(1.2,0.6,2);
+    const carMat = new THREE.MeshStandardMaterial({color: color});
+    const car = new THREE.Mesh(carGeo,carMat);
+    car.position.set(x,0.3,z);
+    scene.add(car);
+    return car;
+  }
+
+  // 1️⃣1️⃣ Adăugăm case
   const houses = [];
-  houses.push(createHouse(-5,-5,0xffcc66));
-  houses.push(createHouse(4,-4,0x66ccff));
-  houses.push(createHouse(-4,4,0xffff66));
+  houses.push(createHouse(-10,-10,0xffcc66));
+  houses.push(createHouse(10,-8,0x66ccff));
+  houses.push(createHouse(-8,10,0xffff66));
 
-  // 8️⃣ Adăugăm copaci
-  const trees = [];
-  trees.push(createTree(-2,-2));
-  trees.push(createTree(3,-3));
-  trees.push(createTree(2,4));
-  trees.push(createTree(-5,3));
+  // 1️⃣2️⃣ Adăugăm copaci
+  createTree(-12,-12);
+  createTree(12,-12);
+  createTree(-12,12);
+  createTree(0,0);
+  createTree(5,10);
 
-  // 9️⃣ Animare
+  // 1️⃣3️⃣ Alei
+  createPath(-10, -5, 2, 8);
+  createPath(10, -5, 2, 8);
+  createPath(-5, 10, 2, 8);
+
+  // 1️⃣4️⃣ Parcare
+  createParking(15,15,10,6);
+
+  // 1️⃣5️⃣ Mașini în parcare
+  createCar(12,13,0xff0000);
+  createCar(14,13,0x0000ff);
+  createCar(16,13,0x00ff00);
+
+  // 1️⃣6️⃣ Animare (rotire ușoară case)
   function animate(){
     requestAnimationFrame(animate);
-
-    // rotire ușoară a caselor pentru efect vizual
-    houses.forEach(h => h.rotation.y += 0.005);
+    houses.forEach(h => h.rotation.y += 0.003);
     renderer.render(scene,camera);
   }
   animate();
 
-  // 10️⃣ Responsivitate la resize
+  // 1️⃣7️⃣ Responsivitate la resize
   window.addEventListener('resize',()=>{
     camera.aspect = window.innerWidth/window.innerHeight;
     camera.updateProjectionMatrix();

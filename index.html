@@ -4,12 +4,30 @@
     <meta charset="UTF-8">
     <title>Casa 3D</title>
     <style>
-        body { margin: 0; background: #eef; display: flex; justify-content: center; align-items: center; height: 100vh; }
-        #canvas-container { width: 800px; height: 600px; }
+        body {
+            margin: 0;
+            background: #eef;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        #canvas-container {
+            width: 800px;
+            height: 600px;
+            border: 1px solid #000;
+        }
     </style>
 </head>
 <body>
     <div id="canvas-container"></div>
-    <script type="module" src="script.js"></script>
+
+    <!-- Three.js global -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.158/build/three.js"></script>
+    <!-- GLTFLoader global -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.158/examples/js/loaders/GLTFLoader.js"></script>
+
+    <!-- Scriptul tău -->
+    <script src="script.js"></script>
 </body>
 </html>

@@ -4,12 +4,24 @@
   <meta charset="UTF-8">
   <title>Casa 3D</title>
   <style>
-    body { margin:0; display:flex; justify-content:center; align-items:center; height:100vh; background:#eef; }
-    #canvas-container { width:800px; height:600px; border:1px solid #000; }
+    body {
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #eef;
+    }
+    #canvas-container {
+      width: 800px;
+      height: 600px;
+      border: 1px solid #000;
+    }
   </style>
 </head>
 <body>
   <div id="canvas-container"></div>
-  <script type="module" src="script.js"></script>
+  <!-- Folosim type="module" pentru importuri corecte -->
+  <script type="module" src="./script.js"></script>
 </body>
 </html>

@@ -18,16 +18,16 @@ const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
 directionalLight.position.set(5, 5, 5);
 scene.add(directionalLight);
 
-// Loader GLB (global)
+// Loader GLB
 const loader = new THREE.GLTFLoader();
 loader.load(
     'small_house.glb', // modelul tău GLB
     function (gltf) {
         const model = gltf.scene;
-        model.scale.set(1,1,1);
+        model.scale.set(1, 1, 1); // ajustează dimensiunea dacă e nevoie
         scene.add(model);
 
-        // animație rotire model
+        // Animație rotire model
         function animate() {
             requestAnimationFrame(animate);
             model.rotation.y += 0.01;

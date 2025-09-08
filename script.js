@@ -21,7 +21,7 @@ scene.add(directionalLight);
 // Loader GLB
 const loader = new THREE.GLTFLoader();
 loader.load(
-  'small_house.glb', // același folder cu index.html și script.js
+  'small_house.glb', // GLB mini test în același folder
   function(gltf){
     const model = gltf.scene;
     model.scale.set(1,1,1);
@@ -29,7 +29,7 @@ loader.load(
 
     function animate(){
       requestAnimationFrame(animate);
-      model.rotation.y += 0.01; // roteste modelul
+      model.rotation.y += 0.01; // rotire model
       renderer.render(scene, camera);
     }
     animate();

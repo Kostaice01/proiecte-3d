@@ -2,7 +2,7 @@
 <html lang="ro">
 <head>
   <meta charset="UTF-8">
-  <title>Casa 3D</title>
+  <title>Casa 3D Funcțional</title>
   <style>
     body {
       margin: 0;
@@ -12,7 +12,7 @@
       height: 100vh;
       background: #eef;
     }
-    #canvas-container {
+    canvas {
       width: 800px;
       height: 600px;
       border: 1px solid #000;
@@ -20,11 +20,56 @@
   </style>
 </head>
 <body>
-  <div id="canvas-container"></div>
 
-  <!-- Three.js r149 global -->
-  <script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.149.0/examples/js/loaders/GLTFLoader.js"></script>
-  <script src="./script.js"></script>
+<!-- Three.js r149 -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"></script>
+
+<!-- GLTFLoader global -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/examples/js/loaders/GLTFLoader.js"></script>
+
+<script>
+  // Scena și camera
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0xeef);
+
+  const camera = new THREE.PerspectiveCamera(75, 800/600, 0.1, 1000);
+  camera.position.set(0, 1.5, 5);
+
+  // Renderer
+  const renderer = new THREE.WebGLRenderer({antialias:true});
+  renderer.setSize(800,600);
+  document.body.appendChild(renderer.domElement);
+
+  // Lumini
+  const ambientLight = new THREE.AmbientLight(0xffffff,0.6);
+  scene.add(ambientLight);
+
+  const directionalLight = new THREE.DirectionalLight(0xffffff,0.8);
+  directionalLight.position.set(5,5,5);
+  scene.add(directionalLight);
+
+  // Loader GLB
+  const loader = new THREE.GLTFLoader();
+  loader.load(
+    'small_house.glb', // GLB în același folder
+    function(gltf){
+      const model = gltf.scene;
+      model.scale.set(1,1,1);
+      scene.add(model);
+
+      function animate(){
+        requestAnimationFrame(animate);
+        model.rotation.y += 0.01; // rotire model
+        renderer.render(scene,camera);
+      }
+      animate();
+    },
+    undefined,
+    function(error){
+      console.error('Eroare la încărcare GLB:', error);
+    }
+  );
+</script>
+
 </body>
 </html>

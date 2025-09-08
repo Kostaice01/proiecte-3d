@@ -1,3 +1,7 @@
+// Import ES Modules din CDN
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.158/build/three.module.js';
+import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.158/examples/jsm/loaders/GLTFLoader.js';
+
 // Creează scena și camera
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xeef);
@@ -19,7 +23,7 @@ directionalLight.position.set(5, 5, 5);
 scene.add(directionalLight);
 
 // Loader GLB
-const loader = new THREE.GLTFLoader();
+const loader = new GLTFLoader();
 loader.load(
     'small_house.glb', // modelul tău GLB
     function (gltf) {

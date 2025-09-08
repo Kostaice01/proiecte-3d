@@ -2,12 +2,12 @@
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xeef);
 
-const camera = new THREE.PerspectiveCamera(75, 800/600, 0.1, 1000);
+const camera = new THREE.PerspectiveCamera(75, 800 / 600, 0.1, 1000);
 camera.position.set(0, 1.5, 5);
 
 // Renderer
 const renderer = new THREE.WebGLRenderer({ antialias: true });
-renderer.setSize(800,600);
+renderer.setSize(800, 600);
 document.getElementById('canvas-container').appendChild(renderer.domElement);
 
 // Lumini
@@ -15,19 +15,19 @@ const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
 scene.add(ambientLight);
 
 const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-directionalLight.position.set(5,5,5);
+directionalLight.position.set(5, 5, 5);
 scene.add(directionalLight);
 
 // Loader GLB
 const loader = new THREE.GLTFLoader();
 loader.load(
-  'small_house.glb', // GLB mini test în același folder
-  function(gltf){
+  'small_house.glb', // asigură-te că fișierul GLB este în același folder
+  function (gltf) {
     const model = gltf.scene;
-    model.scale.set(1,1,1);
+    model.scale.set(1, 1, 1);
     scene.add(model);
 
-    function animate(){
+    function animate() {
       requestAnimationFrame(animate);
       model.rotation.y += 0.01; // rotire model
       renderer.render(scene, camera);
@@ -35,7 +35,7 @@ loader.load(
     animate();
   },
   undefined,
-  function(error){
+  function (error) {
     console.error('Eroare la încărcare GLB:', error);
   }
 );

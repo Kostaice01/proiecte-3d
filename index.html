@@ -10,11 +10,23 @@
 </head>
 <body>
 
-<script src="https://cdn.jsdelivr.net/npm/three@0.162.0/build/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.162.0/examples/js/controls/OrbitControls.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.162.0/examples/js/loaders/GLTFLoader.js"></script>
+<script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.162.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.162.0/examples/jsm/"
+    }
+  }
+</script>
 
-<script>
+<script type="module">
+  // Importă toate clasele de bază din Three.js
+  import * as THREE from 'three';
+  // Importă OrbitControls
+  import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+  // Importă GLTFLoader
+  import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
   // 1️⃣ Scene
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0xeeeeee);
@@ -37,14 +49,14 @@
   scene.add(directionalLight);
 
   // 5️⃣ Controls (rotire cu mouse)
-  const controls = new THREE.OrbitControls(camera, renderer.domElement);
+  const controls = new OrbitControls(camera, renderer.domElement);
   controls.target.set(0, 1, 0);
   controls.update();
 
   // 6️⃣ Loader GLTF
-  const loader = new THREE.GLTFLoader();
+  const loader = new GLTFLoader();
   loader.load(
-    'family_home.glb', // pun aici modelul tău
+    'family_home.glb', // Asigură-te că fișierul "family_home.glb" se află în același director cu acest fișier HTML
     function(gltf) {
       scene.add(gltf.scene);
       console.log('Model încărcat!');
@@ -65,6 +77,7 @@
   // 8️⃣ Animare / render loop
   function animate() {
     requestAnimationFrame(animate);
+    controls.update(); // Foarte important pentru a permite controalelor să funcționeze
     renderer.render(scene, camera);
   }
   animate();

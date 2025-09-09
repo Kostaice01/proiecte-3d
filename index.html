@@ -20,11 +20,8 @@
 </script>
 
 <script type="module">
-  // Importă toate clasele de bază din Three.js
   import * as THREE from 'three';
-  // Importă OrbitControls
   import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-  // Importă GLTFLoader
   import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
   // 1️⃣ Scene
@@ -33,11 +30,14 @@
 
   // 2️⃣ Camera
   const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-  camera.position.set(0, 2, 5);
+  // AJUSTAREA POZIȚIEI CAMEREI
+  camera.position.set(5, 4, 8); // Am mutat camera mai în spate și mai sus pentru o vedere de ansamblu
 
   // 3️⃣ Renderer
   const renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.shadowMap.enabled = true; // Activează umbrele
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap; // Umbre mai netede
   document.body.appendChild(renderer.domElement);
 
   // 4️⃣ Lumină
@@ -46,18 +46,43 @@
 
   const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
   directionalLight.position.set(5, 10, 7);
+  directionalLight.castShadow = true;
+  directionalLight.shadow.mapSize.width = 1024;
+  directionalLight.shadow.mapSize.height = 1024;
+  directionalLight.shadow.camera.near = 0.5;
+  directionalLight.shadow.camera.far = 50;
+  directionalLight.shadow.camera.left = -10;
+  directionalLight.shadow.camera.right = 10;
+  directionalLight.shadow.camera.top = 10;
+  directionalLight.shadow.camera.bottom = -10;
   scene.add(directionalLight);
 
   // 5️⃣ Controls (rotire cu mouse)
   const controls = new OrbitControls(camera, renderer.domElement);
-  controls.target.set(0, 1, 0);
+  // AJUSTAREA PUNCTULUI DE ȚINTĂ
+  controls.target.set(0, 1.5, 0); // Setează punctul central al camerei, ajustat pe înălțimea casei
   controls.update();
 
-  // 6️⃣ Loader GLTF
+  // 6️⃣ Adaugă un plan pentru sol care primește umbre
+  const groundGeometry = new THREE.PlaneGeometry(20, 20);
+  const groundMaterial = new THREE.MeshStandardMaterial({ color: 0x999999 });
+  const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+  ground.rotation.x = -Math.PI / 2;
+  ground.position.y = -0.01; // Poziție ușor sub casă
+  ground.receiveShadow = true;
+  scene.add(ground);
+
+  // 7️⃣ Loader GLTF
   const loader = new GLTFLoader();
   loader.load(
-    'family_home.glb', // Asigură-te că fișierul "family_home.glb" se află în același director cu acest fișier HTML
+    'family_home.glb',
     function(gltf) {
+      gltf.scene.traverse((child) => {
+        if (child.isMesh) {
+          child.castShadow = true;
+          child.receiveShadow = true;
+        }
+      });
       scene.add(gltf.scene);
       console.log('Model încărcat!');
     },
@@ -67,17 +92,17 @@
     }
   );
 
-  // 7️⃣ Redimensionare fereastră
+  // 8️⃣ Redimensionare fereastră
   window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
   });
 
-  // 8️⃣ Animare / render loop
+  // 9️⃣ Animare / render loop
   function animate() {
     requestAnimationFrame(animate);
-    controls.update(); // Foarte important pentru a permite controalelor să funcționeze
+    controls.update();
     renderer.render(scene, camera);
   }
   animate();

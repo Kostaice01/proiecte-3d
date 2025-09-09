@@ -63,14 +63,6 @@
   controls.target.set(0, 1.5, 0); // Setează punctul central al camerei, ajustat pe înălțimea casei
   controls.update();
 
-  // 6️⃣ Adaugă un plan pentru sol care primește umbre
-  const groundGeometry = new THREE.PlaneGeometry(20, 20);
-  const groundMaterial = new THREE.MeshStandardMaterial({ color: 0x999999 });
-  const ground = new THREE.Mesh(groundGeometry, groundMaterial);
-  ground.rotation.x = -Math.PI / 2;
-  ground.position.y = -0.01; // Poziție ușor sub casă
-  ground.receiveShadow = true;
-  scene.add(ground);
   // Creează un plan pentru gazon
 const geometry = new THREE.PlaneGeometry(100, 100); // Poți ajusta dimensiunile
 const material = new THREE.MeshBasicMaterial({ color: 0x4CAF50 }); // O culoare verde

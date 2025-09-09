@@ -2,113 +2,121 @@
 <html lang="ro">
 <head>
   <meta charset="UTF-8">
-  <title>Casa 3D</title>
+  <title>Catalog 3D Căsuțe</title>
   <style>
-    body { margin: 0; overflow: hidden; }
-    canvas { display: block; }
+    body { margin: 0; overflow: hidden; display: flex; font-family: sans-serif; }
+    #gallery { width: 180px; background: #f0f0f0; padding: 10px; box-sizing: border-box; }
+    .thumb { cursor: pointer; margin-bottom: 10px; padding: 5px; background: #ddd; text-align: center; border-radius: 4px; }
+    .thumb:hover { background: #ccc; }
+    #canvas-container { flex: 1; }
+    canvas { display: block; width: 100%; height: 100%; }
   </style>
 </head>
 <body>
 
-<script type="importmap">
-  {
-    "imports": {
-      "three": "https://cdn.jsdelivr.net/npm/three@0.162.0/build/three.module.js",
-      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.162.0/examples/jsm/"
+  <!-- Galerie dreapta -->
+  <div id="gallery">
+    <div class="thumb" data-model="family_home.glb">Casă 1</div>
+    <div class="thumb" data-model="family_home2.glb">Casă 2</div>
+    <div class="thumb" data-model="family_home3.glb">Casă 3</div>
+  </div>
+
+  <!-- Container pentru scena 3D -->
+  <div id="canvas-container"></div>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.162.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.162.0/examples/jsm/"
+      }
     }
-  }
-</script>
+  </script>
 
-<script type="module">
-  import * as THREE from 'three';
-  import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-  import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
-  // 1️⃣ Scene
-  const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x87CEEB);
+    const container = document.getElementById('canvas-container');
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x87CEEB);
 
-  // 2️⃣ Camera
-  const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-  // AJUSTAREA POZIȚIEI CAMEREI
-  camera.position.set(5, 15, 20); // Am mutat camera mai în spate și mai sus pentru o vedere de ansamblu
+    const camera = new THREE.PerspectiveCamera(75, container.clientWidth/container.clientHeight, 0.1, 1000);
+    camera.position.set(5, 15, 20);
 
-  // 3️⃣ Renderer
-  const renderer = new THREE.WebGLRenderer({ antialias: true });
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.shadowMap.enabled = true; // Activează umbrele
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap; // Umbre mai netede
-  document.body.appendChild(renderer.domElement);
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    container.appendChild(renderer.domElement);
 
-  // 4️⃣ Lumină
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
-  scene.add(ambientLight);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+    scene.add(ambientLight);
 
-  const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-  directionalLight.position.set(5, 10, 7);
-  directionalLight.castShadow = true;
-  directionalLight.shadow.mapSize.width = 1024;
-  directionalLight.shadow.mapSize.height = 1024;
-  directionalLight.shadow.camera.near = 0.5;
-  directionalLight.shadow.camera.far = 50;
-  directionalLight.shadow.camera.left = -10;
-  directionalLight.shadow.camera.right = 10;
-  directionalLight.shadow.camera.top = 10;
-  directionalLight.shadow.camera.bottom = -10;
-  scene.add(directionalLight);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    directionalLight.position.set(5, 10, 7);
+    directionalLight.castShadow = true;
+    directionalLight.shadow.mapSize.width = 1024;
+    directionalLight.shadow.mapSize.height = 1024;
+    scene.add(directionalLight);
 
-  // 5️⃣ Controls (rotire cu mouse)
-  const controls = new OrbitControls(camera, renderer.domElement);
-  // AJUSTAREA PUNCTULUI DE ȚINTĂ
-  controls.target.set(0, 1.5, 0); // Setează punctul central al camerei, ajustat pe înălțimea casei
-  controls.update();
-
-  // Creează un plan pentru gazon
-const geometry = new THREE.PlaneGeometry(100, 100); // Poți ajusta dimensiunile
-const material = new THREE.MeshBasicMaterial({ color: 0x4CAF50 }); // O culoare verde
-const ground = new THREE.Mesh(geometry, material);
-
-// Rotește planul ca să fie orizontal
-ground.rotation.x = -Math.PI / 2;
-
-// Adaugă planul la scenă
-scene.add(ground);
-
-  // 7️⃣ Loader GLTF
-  const loader = new GLTFLoader();
-  loader.load(
-    'family_home.glb',
-    function(gltf) {
-      gltf.scene.traverse((child) => {
-        if (child.isMesh) {
-          child.castShadow = true;
-          child.receiveShadow = true;
-        }
-      });
-      scene.add(gltf.scene);
-      console.log('Model încărcat!');
-    },
-    undefined,
-    function(error) {
-      console.error('Eroare la încărcare model:', error);
-    }
-  );
-
-  // 8️⃣ Redimensionare fereastră
-  window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-  });
-
-  // 9️⃣ Animare / render loop
-  function animate() {
-    requestAnimationFrame(animate);
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.target.set(0, 1.5, 0);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
     controls.update();
-    renderer.render(scene, camera);
-  }
-  animate();
-</script>
+
+    // Plan gazon
+    const geometry = new THREE.PlaneGeometry(100, 100);
+    const material = new THREE.MeshBasicMaterial({ color: 0x4CAF50 });
+    const ground = new THREE.Mesh(geometry, material);
+    ground.rotation.x = -Math.PI/2;
+    scene.add(ground);
+
+    const loader = new GLTFLoader();
+    let currentModel = null;
+
+    function loadModel(path) {
+      if(currentModel) scene.remove(currentModel);
+      loader.load(path, gltf => {
+        currentModel = gltf.scene;
+        currentModel.scale.set(1,1,1);
+        currentModel.traverse(child => {
+          if(child.isMesh) {
+            child.castShadow = true;
+            child.receiveShadow = true;
+          }
+        });
+        scene.add(currentModel);
+      }, undefined, err => console.error(err));
+    }
+
+    // Galerie click
+    const thumbs = document.querySelectorAll('.thumb');
+    thumbs.forEach(thumb => {
+      thumb.addEventListener('click', () => {
+        loadModel(thumb.dataset.model);
+      });
+    });
+
+    window.addEventListener('resize', () => {
+      camera.aspect = container.clientWidth / container.clientHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(container.clientWidth, container.clientHeight);
+    });
+
+    function animate() {
+      requestAnimationFrame(animate);
+      controls.update();
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    // Încarcă casa principală inițial
+    loadModel('family_home.glb');
+  </script>
 
 </body>
 </html>

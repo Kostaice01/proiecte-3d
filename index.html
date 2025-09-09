@@ -2,80 +2,73 @@
 <html lang="ro">
 <head>
   <meta charset="UTF-8">
-  <title>Proiectele mele 3D</title>
+  <title>Casa 3D</title>
   <style>
-    body { margin:0; overflow:hidden; font-family: Arial, sans-serif; }
-    #overlay {
-      position: absolute;
-      top: 20px;
-      width: 100%;
-      text-align: center;
-      color: #333;
-      z-index: 10;
-    }
-    canvas { display:block; }
+    body { margin: 0; overflow: hidden; }
+    canvas { display: block; }
   </style>
 </head>
 <body>
-  <div id="overlay">
-    <h1>Proiectele mele 3D</h1>
-    <p>Vezi modelele 3D încărcate în repository.</p>
-  </div>
 
-  <!-- Three.js -->
-  <script src="https://cdn.jsdelivr.net/npm/three@0.162.0/build/three.min.js"></script>
-  <!-- Non-module loaders -->
-  <script src="https://cdn.jsdelivr.net/npm/three@0.162.0/examples/js/loaders/GLTFLoader.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.162.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.162.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.162.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.162.0/examples/js/loaders/GLTFLoader.js"></script>
 
-  <script>
-    // Scene
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xf0f0f0);
+<script>
+  // 1️⃣ Scene
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0xeeeeee);
 
-    // Camera
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-    camera.position.set(0, 1.5, 3);
+  // 2️⃣ Camera
+  const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+  camera.position.set(0, 2, 5);
 
-    // Renderer
-    const renderer = new THREE.WebGLRenderer({antialias:true});
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);
+  // 3️⃣ Renderer
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  document.body.appendChild(renderer.domElement);
 
-    // Lights
-    const ambient = new THREE.AmbientLight(0xffffff, 0.6);
-    scene.add(ambient);
-    const directional = new THREE.DirectionalLight(0xffffff, 1);
-    directional.position.set(5,10,7.5);
-    scene.add(directional);
+  // 4️⃣ Lumină
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+  scene.add(ambientLight);
 
-    // Controls
-    const controls = new THREE.OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.05;
+  const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+  directionalLight.position.set(5, 10, 7);
+  scene.add(directionalLight);
 
-    // Loader GLB
-    const loader = new THREE.GLTFLoader();
-    loader.load('family_home.glb', function(gltf){
+  // 5️⃣ Controls (rotire cu mouse)
+  const controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.target.set(0, 1, 0);
+  controls.update();
+
+  // 6️⃣ Loader GLTF
+  const loader = new THREE.GLTFLoader();
+  loader.load(
+    'family_home.glb', // pun aici modelul tău
+    function(gltf) {
       scene.add(gltf.scene);
-    }, undefined, function(error){
-      console.error('Eroare la încărcarea GLB:', error);
-    });
-
-    // Animate
-    function animate(){
-      requestAnimationFrame(animate);
-      controls.update();
-      renderer.render(scene, camera);
+      console.log('Model încărcat!');
+    },
+    undefined,
+    function(error) {
+      console.error('Eroare la încărcare model:', error);
     }
-    animate();
+  );
 
-    // Responsive
-    window.addEventListener('resize', () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    });
-  </script>
+  // 7️⃣ Redimensionare fereastră
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+
+  // 8️⃣ Animare / render loop
+  function animate() {
+    requestAnimationFrame(animate);
+    renderer.render(scene, camera);
+  }
+  animate();
+</script>
+
 </body>
 </html>

@@ -22,8 +22,9 @@
     <p>Vezi modelele 3D încărcate în repository.</p>
   </div>
 
-  <!-- Three.js și GLTFLoader prin CDN -->
+  <!-- Three.js -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.162.0/build/three.min.js"></script>
+  <!-- Non-module loaders -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.162.0/examples/js/loaders/GLTFLoader.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.162.0/examples/js/controls/OrbitControls.js"></script>
 
@@ -53,7 +54,7 @@
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
 
-    // Load your GLB model
+    // Loader GLB
     const loader = new THREE.GLTFLoader();
     loader.load('family_home.glb', function(gltf){
       scene.add(gltf.scene);

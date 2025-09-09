@@ -71,6 +71,16 @@
   ground.position.y = -0.01; // Poziție ușor sub casă
   ground.receiveShadow = true;
   scene.add(ground);
+  // Creează un plan pentru gazon
+const geometry = new THREE.PlaneGeometry(100, 100); // Poți ajusta dimensiunile
+const material = new THREE.MeshBasicMaterial({ color: 0x4CAF50 }); // O culoare verde
+const ground = new THREE.Mesh(geometry, material);
+
+// Rotește planul ca să fie orizontal
+ground.rotation.x = -Math.PI / 2;
+
+// Adaugă planul la scenă
+scene.add(ground);
 
   // 7️⃣ Loader GLTF
   const loader = new GLTFLoader();

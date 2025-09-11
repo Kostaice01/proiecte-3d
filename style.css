@@ -1,0 +1,45 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+header {
+    background-color: #f8f8f8; /* Un fundal ușor pentru header */
+    padding: 10px 20px;
+    border-bottom: 1px solid #eee;
+    display: flex; /* Folosim flexbox pentru a aranja elementele */
+    justify-content: flex-end; /* Aliniază meniul la dreapta */
+    align-items: center;
+}
+
+.main-nav {
+    list-style: none; /* Elimină bulinele de la listă */
+    margin: 0;
+    padding: 0;
+    display: flex; /* Face ca elementele listei să stea pe o singură linie */
+}
+
+.main-nav li {
+    margin-left: 20px; /* Spațiu între elementele meniului */
+}
+
+.main-nav a {
+    text-decoration: none; /* Elimină sublinierea de la linkuri */
+    color: #333; /* Culoarea textului linkului */
+    font-weight: bold;
+    padding: 5px 0;
+    transition: color 0.3s ease; /* Efect de tranziție la hover */
+}
+
+.main-nav a:hover {
+    color: #007bff; /* Culoarea la hover */
+}
+
+/* Stiluri pentru logo, dacă vrei să-l adaugi ca în a doua imagine */
+.logo {
+    margin-right: auto; /* Împinge meniul la dreapta */
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    text-decoration: none;
+}
